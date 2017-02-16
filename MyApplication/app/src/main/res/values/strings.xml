@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Photo2Navigation</string>
+    <string name="button_1_text">You Clicked</string>
+    <string name="users_name">Your Name</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="pick_me">Pick Me</string>
+    <string name="happy_question">Are You Happy?</string>
+    <string name="no_hint_button">No Pick Me</string>
+
+</resources>
