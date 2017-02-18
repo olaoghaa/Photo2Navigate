@@ -58,7 +58,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Toast.makeText(this, "Location services are needed to show location preview", Toast.LENGTH_SHORT).show();
             }
 
-            requestPermissions(new String [] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, );
+            requestPermissions(new String [] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, RE);
         }
     }
 }
