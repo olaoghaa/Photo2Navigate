@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.multidex.MultiDexApplication;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -18,13 +19,20 @@ import java.text.SimpleDateFormat;
 import java.util.Date;import android.annotation.SuppressLint;
 import android.location.Location;
 import android.media.ExifInterface;
-
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
     TextView Exif;
     TextView txtSDK;
+
+
+
 
 
     @Override
@@ -39,6 +47,16 @@ public class MainActivity extends Activity {
         txtUriPath = (TextView) findViewById(R.id.txtUriPath);
         txtRealPath = (TextView) findViewById(R.id.txtRealPath);*/
     }
+
+    public void sendToMap(View view) {
+        Intent intent = new Intent(this, MapsActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+       // intent.putExtra("Location of image", c);
+        startActivity(intent);
+    }
+
 
     public void loadImagefromGallery(View view) {
         // Create intent to Open Image applications like Gallery, Google Photos
@@ -61,6 +79,9 @@ public class MainActivity extends Activity {
                 String s = getRealPathFromURI(selectedImage);
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Location c=readGeoTagImage(s);
+
+                ((Application)this.getApplication()).setGPS(c);
+
                 // Get the cursor
                 Cursor cursor = getContentResolver().query(selectedImage,
                         filePathColumn, null, null, null);
@@ -89,6 +110,7 @@ public class MainActivity extends Activity {
         }
 
     }
+
 
 
     public String getRealPathFromURI(Uri uri) {

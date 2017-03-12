@@ -8,7 +8,8 @@
         android:id="@+id/imgView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"></ImageView>
+        android:layout_weight="1"
+        android:onClick="sendToMap"></ImageView>
 
     <Button
         android:id="@+id/buttonLoadPicture"
