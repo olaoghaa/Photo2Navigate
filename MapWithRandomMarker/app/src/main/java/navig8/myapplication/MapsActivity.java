@@ -50,15 +50,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void showLocation(View view) {
-        if(checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            showLocationPreview();
-        }
-        else{
-            if(shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                Toast.makeText(this, "Location services are needed to show location preview", Toast.LENGTH_SHORT).show();
-            }
-
-            requestPermissions(new String [] {Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, RE);
-        }
+        
     }
 }
