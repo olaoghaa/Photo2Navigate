@@ -36,11 +36,18 @@ public class DirectionsJSONParser {
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
 
                     /** Traversing all steps */
+                    /*String loop [] = null;
+                    for(int index=0;index<jSteps.length();index++){
+                        loop[index]=(String)(((JSONObject)jSteps.get(index)).get("html_instructions"));
+                    }
+
+                    Log.d("Respect", ""+loop);*/
+
                     for(int k=0;k<jSteps.length();k++){
                         String polyline = "";
                         String jj;
                         //jj= (String)(((JSONObject)jSteps.get(k)).get("html_instructions"));
-                        //Log.d("I really resally rea", jj);
+                        //Log.d("I really resally reaper", jj);
                         polyline = (String)((JSONObject)((JSONObject)jSteps.get(k)).get("polyline")).get("points");
                         List<LatLng> list = decodePoly(polyline);
 

@@ -1,5 +1,6 @@
 package com.prgguru.example;
 
+import android.database.DataSetObserver;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -37,10 +38,19 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.location.LocationListener;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -55,6 +65,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     ArrayList<LatLng> markerPoints;
     UiSettings uiSettings;
+    ListView love;
    // com.google.android.gms.location.LocationListener locationListener;
 
 
@@ -173,6 +184,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+
+
     // Fetches data from url passed
         private class DownloadTask extends AsyncTask<String, Void, String> {
 
@@ -203,12 +216,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             protected void onPostExecute(String result) {
                 super.onPostExecute(result);
-
                 ParserTask parserTask = new ParserTask();
+                ParserTask2 parserTask2 = new ParserTask2();
+
 
                 // Invokes the thread for parsing the JSON data
                 parserTask.execute(result);
-                }
+                parserTask2.execute(result);
+
+            }
 
 
         }
@@ -238,6 +254,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 return routes;
                 }
+
+
+
+
             // Executes in UI thread, after the parsing process
             @Override
             protected void onPostExecute(List<List<HashMap<String, String>>> result) {
@@ -264,8 +284,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if(j==4){
                             Log.d("sdfsdfes", ""+result);
                         }
-                        String r = point.get("html_instructions");
-                        Log.d("point here", "Here it is: "+r);
                         double lat = Double.parseDouble(point.get("lat"));
                         double lng = Double.parseDouble(point.get("lng"));
                         LatLng position = new LatLng(lat, lng);
@@ -284,7 +302,72 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             }
 
-           /* @Override
+
+
+    //second parser for directions
+
+    private class ParserTask2 extends AsyncTask<String, Integer, String[]> {
+
+        // Parsing the data in non-ui thread
+
+        @Override
+
+        protected String [] doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            String [] directions = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                InstructionsJSONParser parser = new InstructionsJSONParser();
+
+                // Starts parsing data
+                directions = parser.parse(jObject);
+                if(directions==null){
+                    Log.d("Ggggg", "you want to ride my bicycle");
+                }
+                else{
+                    Log.d("ddddddd", "well this is bad"+directions[2]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return directions;
+        }
+
+
+        // Executes in UI thread, after the parsing process
+        @Override
+        protected void onPostExecute(String [] directions) {
+           /* for(int i=0;i< directions.length;i++) {
+                Log.d("Ggggg", directions[i]);
+            }*/
+
+            if(directions!=null&&directions.length>=1) {
+                  // love = (ListView) findViewById(R.id.listy);
+                   //ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.activity_maps, directions);
+                     //RelativeLayout item = (RelativeLayout)findViewById(R.id.other);
+                     //View lover = getLayoutInflater().inflate(R.layout.activity_maps, null);
+                    //item.addView(lover);
+                   //love.setAdapter(adapter);
+                //Toast.makeText(MapsActivity.this, "", Toast.LENGTH_SHORT).show();
+                //Toast toast = new Toast(getApplicationContext());
+                Toast.makeText(getApplicationContext(), "Hello"+directions[0]+"/n"+directions[1], Toast.LENGTH_SHORT).show();
+                Log.d("Noot broke yote", "High quality gifs"+directions.length);
+            /*RelativeLayout lView= (RelativeLayout)findViewById(R.id.other);
+            ListFragment listFragment= new ListFragment();
+            ListAdapter listAdapter;
+            listFragment.getListView();
+            ListView listView= new ListView(getApplicationContext());*/
+               /* love.addView(findViewById(R.id.map));
+            }*/
+                // Toast.makeText(getApplicationContext(), "You haven't picked Image"+directions,
+                //       Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+         /*  @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -331,7 +414,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.d("heta ttud", ""+location.getLongitude());
                 LatLng newbie = new LatLng(location.getLatitude(), location.getLongitude());
 
-
+            //Location yyy=getLastLocation();
             //Location currentlocation= LocationServices.FusedLocationApi.getLastLocation();
             Location hope = ((Application) this.getApplication()).getGPS();
             // Add a marker in Sydney and move the camera
