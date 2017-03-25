@@ -1,11 +1,34 @@
 package com.prgguru.example;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+
+
+
+
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
+import android.text.Spanned;
+import android.widget.Toast;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -39,6 +62,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -60,19 +84,41 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,
-        LocationSource.OnLocationChangedListener, com.google.android.gms.location.LocationListener, View.OnClickListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener,
+        LocationSource.OnLocationChangedListener, com.google.android.gms.location.LocationListener, View.OnClickListener,
+        GoogleMap.OnMyLocationButtonClickListener,
+        ActivityCompat.OnRequestPermissionsResultCallback{
     private GoogleMap mMap;
     ArrayList<LatLng> markerPoints;
     UiSettings uiSettings;
     ListView love;
+    private ListAdapter lastHope;
+
    // com.google.android.gms.location.LocationListener locationListener;
+
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+
+    /**
+     * Flag indicating whether a requested permission has been denied after returning in
+     * {@link #onRequestPermissionsResult(int, String[], int[])}.
+     */
+    private boolean mPermissionDenied = false;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Location hope = ((Application) this.getApplication()).getGPS();
+        double lat = hope.getLatitude();
+        double log = hope.getLongitude();
+        if(lat==0){
+            Toast.makeText(this, "Error matey boy. SET YOUR GEOTAGS", Toast.LENGTH_LONG).show();
+            setContentView(R.layout.activity_main);
+        }
+
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -184,6 +230,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    public boolean onMyLocationButtonClick() {
+        return false;
+    }
 
 
     // Fetches data from url passed
@@ -306,16 +356,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     //second parser for directions
 
-    private class ParserTask2 extends AsyncTask<String, Integer, String[]> {
+    private class ParserTask2 extends AsyncTask<String, Integer, List<String>> {
 
         // Parsing the data in non-ui thread
 
         @Override
 
-        protected String [] doInBackground(String... jsonData) {
+        protected List <String> doInBackground(String... jsonData) {
 
             JSONObject jObject;
-            String [] directions = null;
+            List<String> directions = null;
 
             try {
                 jObject = new JSONObject(jsonData[0]);
@@ -327,7 +377,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.d("Ggggg", "you want to ride my bicycle");
                 }
                 else{
-                    Log.d("ddddddd", "well this is bad"+directions[2]);
+                    Log.d("ddddddd", "well this is bad"+directions.get(2));
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -338,12 +388,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Executes in UI thread, after the parsing process
         @Override
-        protected void onPostExecute(String [] directions) {
+        protected void onPostExecute(List<String> directions) {
            /* for(int i=0;i< directions.length;i++) {
                 Log.d("Ggggg", directions[i]);
             }*/
 
-            if(directions!=null&&directions.length>=1) {
+            if(directions!=null&&directions.size()>=1) {
                   // love = (ListView) findViewById(R.id.listy);
                    //ArrayAdapter adapter = new ArrayAdapter<String>(getApplicationContext(), R.layout.activity_maps, directions);
                      //RelativeLayout item = (RelativeLayout)findViewById(R.id.other);
@@ -352,8 +402,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                    //love.setAdapter(adapter);
                 //Toast.makeText(MapsActivity.this, "", Toast.LENGTH_SHORT).show();
                 //Toast toast = new Toast(getApplicationContext());
-                Toast.makeText(getApplicationContext(), "Hello"+directions[0]+"/n"+directions[1], Toast.LENGTH_SHORT).show();
-                Log.d("Noot broke yote", "High quality gifs"+directions.length);
+               // Toast.makeText(getApplicationContext(), "Hello"+directions.get(0)+"/n"+directions.get(1), Toast.LENGTH_SHORT).show();
+                Log.d("Noot broke yote", "High quality gifs"+directions.size());
             /*RelativeLayout lView= (RelativeLayout)findViewById(R.id.other);
             ListFragment listFragment= new ListFragment();
             ListAdapter listAdapter;
@@ -363,8 +413,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }*/
                 // Toast.makeText(getApplicationContext(), "You haven't picked Image"+directions,
                 //       Toast.LENGTH_LONG).show();
+              /*  ArrayAdapter<String> itemsAdapter =
+                        new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, directions);
+                Spanned tt=Html.fromHtml(directions.get(1));
+                ListView listView = (ListView) findViewById(R.id.listy);
+                listView.setAdapter(itemsAdapter);
+                TextView johhny= (TextView) findViewById(R.id.html);
+                johhny.setText(tt);*/
+                ListView listView = (ListView) findViewById(R.id.listy);
+
+                UsersAdapter foo = new UsersAdapter(getApplicationContext(), directions);
+                listView.setAdapter(foo);
+
             }
+
+
+
+
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Spanned fromHtml(String html){
+        Spanned result;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            result = Html.fromHtml(html,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            result = Html.fromHtml(html);
+        }
+        return result;
     }
 
          /*  @Override
@@ -402,17 +479,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         public void onMapReady (GoogleMap googleMap){
             mMap = googleMap;
-
-            LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            LatLng newbie= enableMyLocation();
+           /* LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             Criteria criteria = new Criteria();
             String bestProvider = locationManager.getBestProvider(criteria, true);
-            Location location = locationManager.getLastKnownLocation(bestProvider);
-           /* if (location != null) {
+            Location location = locationManager.getLastKnownLocation(locationManager
+                    .getBestProvider(criteria, false));
+           // Location location = locationManager.getLastKnownLocation(bestProvider);
+            /*if (location != null) {
                 onLocationChanged(location);
             }*/
-           // locationManager.requestLocationUpdates(bestProvider, 20000, 0, (android.location.LocationListener) this);
-            Log.d("heta ttud", ""+location.getLongitude());
-                LatLng newbie = new LatLng(location.getLatitude(), location.getLongitude());
+            //locationManager.requestLocationUpdates(bestProvider, 20000, 0, (android.location.LocationListener) this);
+            //Log.d("heta ttud", ""+location.getLongitude());
+             //   LatLng newbie = new LatLng(location.getLatitude(), location.getLongitude());
 
             //Location yyy=getLastLocation();
             //Location currentlocation= LocationServices.FusedLocationApi.getLastLocation();
@@ -423,9 +502,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng picture = new LatLng(lat, log);
             LatLng sydney = new LatLng(-34, 151);
             LatLng nearSyd= new LatLng(-34, 148);
-            Log.d("Hello is it me", "Lat and Lang"+newbie);
-            mMap.addMarker(new MarkerOptions().position(picture).title("Marker in Sydney"));
-            mMap.addMarker(new MarkerOptions().position(newbie).title("Marker not in Sydney"));
+            //Log.d("Hello is it me", "Lat and Lang"+newbie);
+            mMap.addMarker(new MarkerOptions().position(picture).title("Marker of picture"));
+          //  mMap.addMarker(new MarkerOptions().position(newbie).title("Marker of last known location"));
             mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             mMap.addMarker(new MarkerOptions().position(nearSyd).title("Marker in Sydney"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(picture));
@@ -437,8 +516,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             downloadTask.execute(url);
             //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
             //setUpMap();
-       /* Location gg=mMap.getMyLocation();
-        double lat1= gg.getLatitude();
+       // Location gg=mMap.getMyLocation();
+        /*double lat1= gg.getLatitude();
         double log1=gg.getLongitude();
         LatLng picture1= new LatLng(lat1, log1);
         mMap.addMarker(new MarkerOptions().position(picture1).title("Marker in not Sydney"));*/
@@ -449,7 +528,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.d("Help", "Are we human or are we dancers my signs are vital. My hands are cold. And i'm on my knees looking for the answer");
 
                 // Enable MyLocation Button in the Map
-                mMap.setMyLocationEnabled(true);
+               // mMap.setMyLocationEnabled(true);
 
                 // Setting onclick event listener for the map
                 /*mMap.setOnMapClickListener(new OnMapClickListener() {
@@ -514,7 +593,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
 
-    private void setUpMap() {
+/*    private void setUpMap() {
         // mMap.addMarker(new MarkerOsptions().position(new LatLng(0, 0)).title("Marker"));
         mMap.setMyLocationEnabled(true);
 
@@ -529,5 +608,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
        Polyline polyline = mMap.addPolyline(rectOptions);*/
 
 
+    //}
+
+
+
+    private LatLng enableMyLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission to access the location is missing.
+            PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
+                    Manifest.permission.ACCESS_FINE_LOCATION, true);
+        } else if (mMap != null) {
+            // Access to the location has been granted to the app.
+            mMap.setMyLocationEnabled(true);
+
+
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            String bestProvider = locationManager.getBestProvider(criteria, true);
+            Location location = locationManager.getLastKnownLocation(locationManager
+                    .getBestProvider(criteria, false));
+            LatLng newbie = new LatLng(location.getLatitude(), location.getLongitude());
+            mMap.addMarker(new MarkerOptions().position(newbie).title("Marker of last known location"));
+            return newbie;
+
+
+        }
+        return null;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
+            return;
+        }
+
+        if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                Manifest.permission.ACCESS_FINE_LOCATION)) {
+            // Enable the my location layer if the permission has been granted.
+            enableMyLocation();
+        } else {
+            // Display the missing permission error dialog when the fragments resume.
+            mPermissionDenied = true;
+        }
+    }
+
+    @Override
+    protected void onResumeFragments() {
+        super.onResumeFragments();
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError();
+            mPermissionDenied = false;
+        }
+    }
+
+    /**
+     * Displays a dialog with error message explaining that the location permission is missing.
+     */
+    private void showMissingPermissionError() {
+        PermissionUtils.PermissionDeniedDialog
+                .newInstance(true).show(getSupportFragmentManager(), "dialog");
+    }
+
 }

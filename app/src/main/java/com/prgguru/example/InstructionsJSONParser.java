@@ -14,13 +14,13 @@ import org.json.JSONObject;
 import com.google.android.gms.maps.model.LatLng;
 public class InstructionsJSONParser {
     /** Receives a JSONObject and returns a list of lists containing latitude and longitude */
-    public String []  parse(JSONObject jObject){
+    public List<String>  parse(JSONObject jObject){
 
         List<List<HashMap<String, String>>> routes = new ArrayList<List<HashMap<String,String>>>() ;
         JSONArray jRoutes = null;
         JSONArray jLegs = null;
         JSONArray jSteps = null;
-        String jj []= null;
+        List<String> jj = null;
         try {
 
             jRoutes = jObject.getJSONArray("routes");
@@ -33,11 +33,11 @@ public class InstructionsJSONParser {
                 /** Traversing all legs */
                 for(int j=0;j<jLegs.length();j++){
                     jSteps = ( (JSONObject)jLegs.get(j)).getJSONArray("steps");
-                    jj=new String[jSteps.length()];
+                    jj=new ArrayList<String>() ;
                     /** Traversing all steps */
                     for(int k=0;k<jSteps.length();k++){
                         String polyline = "";
-                        jj[k]= (String)(((JSONObject)jSteps.get(k)).get("html_instructions"));
+                        jj.add(k,(String)(((JSONObject)jSteps.get(k)).get("html_instructions")));
                     }
                     routes.add(path);
                 }

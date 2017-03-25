@@ -79,28 +79,34 @@ public class MainActivity extends Activity {
                 String s = getRealPathFromURI(selectedImage);
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Location c=readGeoTagImage(s);
+                if(c.getLongitude()!=0) {
 
-                ((Application)this.getApplication()).setGPS(c);
 
-                // Get the cursor
-                Cursor cursor = getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);
-                // Move to first row
-                cursor.moveToFirst();
+                    ((Application) this.getApplication()).setGPS(c);
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                System.out.print(" path  "+filePathColumn[0]);
-               // System.out.println("Date: " + exif.get(0x0132)); //0x9003
-                imgDecodableString = cursor.getString(columnIndex);
-                cursor.close();
-                ImageView imgView = (ImageView) findViewById(R.id.imgView);
-                // Set the Image in ImageView after decoding the String
-                imgView.setImageBitmap(BitmapFactory
-                        .decodeFile(imgDecodableString));
+                    // Get the cursor
+                    Cursor cursor = getContentResolver().query(selectedImage,
+                            filePathColumn, null, null, null);
+                    // Move to first row
+                    cursor.moveToFirst();
 
-                Toast.makeText(this, "Local  ="+c, Toast.LENGTH_LONG).show();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    System.out.print(" path  " + filePathColumn[0]);
+                    // System.out.println("Date: " + exif.get(0x0132)); //0x9003
+                    imgDecodableString = cursor.getString(columnIndex);
+                    cursor.close();
+                    ImageView imgView = (ImageView) findViewById(R.id.imgView);
+                    // Set the Image in ImageView after decoding the String
+                    imgView.setImageBitmap(BitmapFactory
+                            .decodeFile(imgDecodableString));
 
-            } else {
+                    Toast.makeText(this, "Local  =" + c, Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Toast.makeText(this, "CHOOSE AN IMAGE WITH GEOTAGS", Toast.LENGTH_LONG).show();
+                }
+            }
+            else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
             }

@@ -14,15 +14,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
+import android.R.string;
 
 public abstract class PermissionUtils {
     /**
      * Requests the fine location permission. If a rationale with an additional explanation should
      * be shown to the user, displays a dialog that triggers the request.
      */
- //   public static void requestPermission(AppCompatActivity activity, int requestId,
-   //                                      String permission, boolean finishActivity) {
-     /*   if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
+    public static void requestPermission(AppCompatActivity activity, int requestId,
+                                         String permission, boolean finishActivity) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
             // Display a dialog with rationale.
             PermissionUtils.RationaleDialog.newInstance(requestId, finishActivity)
                     .show(activity.getSupportFragmentManager(), "dialog");
@@ -39,7 +40,7 @@ public abstract class PermissionUtils {
      *
      * @see android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback
      */
-   /* public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults,
+    public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults,
                                               String permission) {
         for (int i = 0; i < grantPermissions.length; i++) {
             if (permission.equals(grantPermissions[i])) {
@@ -52,7 +53,7 @@ public abstract class PermissionUtils {
     /**
      * A dialog that displays a permission denied message.
      */
-   /* public static class PermissionDeniedDialog extends DialogFragment {
+    public static class PermissionDeniedDialog extends DialogFragment {
 
         private static final String ARGUMENT_FINISH_ACTIVITY = "finish";
 
@@ -62,7 +63,7 @@ public abstract class PermissionUtils {
          * Creates a new instance of this dialog and optionally finishes the calling Activity
          * when the 'Ok' button is clicked.
          */
-    /*    public static PermissionDeniedDialog newInstance(boolean finishActivity) {
+        public static PermissionDeniedDialog newInstance(boolean finishActivity) {
             Bundle arguments = new Bundle();
             arguments.putBoolean(ARGUMENT_FINISH_ACTIVITY, finishActivity);
 
@@ -100,7 +101,7 @@ public abstract class PermissionUtils {
      * {@link android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback}
      * to handle permit or denial of this permission request.
      */
-   /* public static class RationaleDialog extends DialogFragment {
+    public static class RationaleDialog extends DialogFragment {
 
         private static final String ARGUMENT_PERMISSION_REQUEST_CODE = "requestCode";
 
@@ -120,7 +121,7 @@ public abstract class PermissionUtils {
          * @param finishActivity Whether the calling Activity should be finished if the dialog is
          *                       cancelled.
          */
-        /*public static RationaleDialog newInstance(int requestCode, boolean finishActivity) {
+        public static RationaleDialog newInstance(int requestCode, boolean finishActivity) {
             Bundle arguments = new Bundle();
             arguments.putInt(ARGUMENT_PERMISSION_REQUEST_CODE, requestCode);
             arguments.putBoolean(ARGUMENT_FINISH_ACTIVITY, finishActivity);
@@ -163,5 +164,5 @@ public abstract class PermissionUtils {
                 getActivity().finish();
             }
         }
-    }*/
+    }
 }
