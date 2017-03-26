@@ -25,7 +25,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
     private static int RESULT_LOAD_IMG = 1;
     String imgDecodableString;
     TextView Exif;
@@ -54,6 +54,15 @@ public class MainActivity extends Activity {
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
        // intent.putExtra("Location of image", c);
+        startActivity(intent);
+    }
+
+    public void sendToMulti(View view) {
+        Intent intent = new Intent(this, Main2Activity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        // intent.putExtra("Location of image", c);
         startActivity(intent);
     }
 

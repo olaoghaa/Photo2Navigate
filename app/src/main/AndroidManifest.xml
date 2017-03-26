@@ -27,7 +27,6 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -44,11 +43,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".Sharer">
             <intent-filter>
@@ -58,6 +53,19 @@
 
                 <data android:mimeType="image/*" />
             </intent-filter>
+        </activity>
+        <activity android:name=".MultiLoad" />
+
+        <activity
+            android:name=".MultiMapActivity"
+            android:label="@string/title_activity_multi_map"></activity>
+
+        <activity android:name=".Main2Activity"
+            android:parentActivityName=".MainActivity">
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
 
         </activity>
     </application>

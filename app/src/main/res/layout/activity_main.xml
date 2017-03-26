@@ -20,4 +20,14 @@
         android:onClick="loadImagefromGallery"
         android:text="Load Picture"></Button>
 
+    <Button
+        android:textColor="#000000"
+        android:background="#fd68b3"
+        android:id="@+id/buttonSendAway"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:onClick="sendToMulti"
+        android:text="Load multiple pictures"></Button>
+
 </LinearLayout>

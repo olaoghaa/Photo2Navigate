@@ -1,6 +1,7 @@
 package com.prgguru.example;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.DataSetObserver;
 import android.location.Criteria;
@@ -114,16 +115,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         double lat = hope.getLatitude();
         double log = hope.getLongitude();
         if(lat==0){
-            Toast.makeText(this, "Error matey boy. SET YOUR GEOTAGS", Toast.LENGTH_LONG).show();
-            setContentView(R.layout.activity_main);
+            Toast.makeText(this, "Whoops no GEOTAG", Toast.LENGTH_LONG).show();
+
+            sendBack(findViewById(R.id.imgView));
         }
+        else {
 
-
-        setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+            setContentView(R.layout.activity_maps);
+            // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
 
 /*        LocationListener mLocationListener = new LocationListener() {
             @Override
@@ -140,19 +142,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 */
-        // Getting reference to SupportMapFragment of the activity_main
-        //SupportMapFragment fm = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
+            // Getting reference to SupportMapFragment of the activity_main
+            //SupportMapFragment fm = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
 
-        // Getting Map for the SupportMapFragment
-        //mMap = fm.getMapAsync(mMap.);
+            // Getting Map for the SupportMapFragment
+            //mMap = fm.getMapAsync(mMap.);
 
-        // Initializing
-
-
+            // Initializing
 
 
+        }
 
     }
+
+    public void sendBack(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        //String message = editText.getText().toString();
+        //intent.putExtra(EXTRA_MESSAGE, message);
+        // intent.putExtra("Location of image", c);
+        startActivity(intent);
+    }
+
+
         private String getDirectionsUrl (LatLng origin, LatLng dest){
 
             // Origin of route
