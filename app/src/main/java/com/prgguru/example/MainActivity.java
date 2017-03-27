@@ -33,9 +33,6 @@ MainActivity extends AppCompatActivity {
     TextView txtSDK;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +40,7 @@ MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
         //Exif = (TextView)findViewById(R.id.exif);
-       // txtSDK = (TextView) findViewById(R.id.txtSDK);
+        // txtSDK = (TextView) findViewById(R.id.txtSDK);
        /* btnSelectImage = (Button) findViewById(R.id.btnSelectImage);
         txtUriPath = (TextView) findViewById(R.id.txtUriPath);
         txtRealPath = (TextView) findViewById(R.id.txtRealPath);*/
@@ -54,7 +51,7 @@ MainActivity extends AppCompatActivity {
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         //String message = editText.getText().toString();
         //intent.putExtra(EXTRA_MESSAGE, message);
-       // intent.putExtra("Location of image", c);
+        // intent.putExtra("Location of image", c);
         startActivity(intent);
     }
 
@@ -75,6 +72,7 @@ MainActivity extends AppCompatActivity {
         // Start the Intent
         startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -88,8 +86,8 @@ MainActivity extends AppCompatActivity {
                 Uri selectedImage = data.getData();
                 String s = getRealPathFromURI(selectedImage);
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Location c=readGeoTagImage(s);
-                if(c.getLongitude()!=0) {
+                Location c = readGeoTagImage(s);
+                if (c.getLongitude() != 0) {
 
 
                     ((Application) this.getApplication()).setGPS(c);
@@ -111,12 +109,10 @@ MainActivity extends AppCompatActivity {
                             .decodeFile(imgDecodableString));
 
                     Toast.makeText(this, "Local  =" + c, Toast.LENGTH_LONG).show();
-                }
-                else{
+                } else {
                     Toast.makeText(this, "CHOOSE AN IMAGE WITH GEOTAGS", Toast.LENGTH_LONG).show();
                 }
-            }
-            else {
+            } else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
             }
@@ -128,9 +124,8 @@ MainActivity extends AppCompatActivity {
     }
 
 
-
     public String getRealPathFromURI(Uri uri) {
-        String[] projection = { MediaStore.Images.Media.DATA };
+        String[] projection = {MediaStore.Images.Media.DATA};
         @SuppressWarnings("deprecation")
         Cursor cursor = managedQuery(uri, projection, null, null, null);
         int column_index = cursor
@@ -139,13 +134,12 @@ MainActivity extends AppCompatActivity {
         return cursor.getString(column_index);
     }
 
-    public Location readGeoTagImage(String imagePath)
-    {
+    public Location readGeoTagImage(String imagePath) {
         Location loc = new Location("");
         try {
             ExifInterface exif = new ExifInterface(imagePath);
-            float [] latlong = new float[2] ;
-            if(exif.getLatLong(latlong)){
+            float[] latlong = new float[2];
+            if (exif.getLatLong(latlong)) {
                 loc.setLatitude(latlong[0]);
                 loc.setLongitude(latlong[1]);
             }
